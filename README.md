@@ -1,4 +1,4 @@
-## react-native-fyber
+## react-native-fyber-offerwall
 
 A react-native module for Fyber offer walls
 
