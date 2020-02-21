@@ -8,7 +8,7 @@ Fyber iOS SDK v9.0.0 is already packaged up to save time and pain!
 
 ### Installation
 
-1. `npm i squaretwo/react-native-fyber-offerwall#v0.0.1 -S`
+1. `npm i squaretwo/react-native-fyber-offerwall#v1.0.0 -S`
 
 
 ### Usage

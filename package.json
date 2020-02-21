@@ -1,54 +1,20 @@
 {
-  "_from": "git+https://github.com/squaretwo/react-native-fyber.git#v1.2.3",
-  "_id": "react-native-fyber@1.2.3",
-  "_inBundle": false,
-  "_integrity": "",
-  "_location": "/react-native-fyber",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "git",
-    "raw": "react-native-fyber@git+https://github.com/squaretwo/react-native-fyber.git#v1.2.3",
-    "name": "react-native-fyber",
-    "escapedName": "react-native-fyber",
-    "rawSpec": "git+https://github.com/squaretwo/react-native-fyber.git#v1.2.3",
-    "saveSpec": "git+https://github.com/squaretwo/react-native-fyber.git#v1.2.3",
-    "fetchSpec": "https://github.com/squaretwo/react-native-fyber.git",
-    "gitCommittish": "v1.2.3"
-  },
-  "_requiredBy": [
-    "/"
-  ],
-  "_resolved": "git+https://github.com/squaretwo/react-native-fyber.git#29947f5c40b256e783c19513c651497d35dfc6eb",
-  "_spec": "react-native-fyber@git+https://github.com/squaretwo/react-native-fyber.git#v1.2.3",
-  "_where": "/Users/peter/Projects/SquareTwo/verydice",
-  "author": {
-    "name": "Ben Yee",
-    "email": "benyee@gmail.com"
-  },
-  "bugs": {
-    "url": "https://github.com/squaretwo/react-native-fyber/issues"
-  },
-  "bundleDependencies": false,
-  "deprecated": false,
-  "description": "A react-native interface for using Fyber for advertising via Offerwall, Rewarded Video, Banner, and Intersitials",
-  "homepage": "https://github.com/squaretwo/react-native-fyber#readme",
+  "name": "react-native-fyber-offerwall",
+  "version": "1.0.0",
+  "description": "A react-native interface for using Fyber for advertising via Offerwall",
+  "main": "index.js",
   "keywords": [
     "fyber",
     "react-native",
-    "banner ads",
-    "offerwall",
-    "rewarded video",
-    "intersitials"
+    "offerwall"
   ],
+  "author": "Peter Kemmer <peter@squaretwp.co>",
   "license": "MIT",
-  "main": "index.js",
-  "name": "react-native-fyber",
   "peerDependencies": {
-    "react-native": ">=0.31.0"
+    "react-native": ">=0.58.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/squaretwo/react-native-fyber.git"
-  },
-  "version": "1.2.3"
+    "url": "git@github.com:squaretwo/react-native-fyber-offerwall.git"
+  }
 }
