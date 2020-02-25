@@ -43,6 +43,7 @@ public class RNFyberOfferWallModule extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 Log.d(TAG, "Settings appId:" + appId);
+
                 try {
                     Fyber.Settings settings = Fyber.with(appId, getCurrentActivity()).withUserId(userId).withSecurityToken(securityToken).start();
 
@@ -64,7 +65,10 @@ public class RNFyberOfferWallModule extends ReactContextBaseJavaModule {
                             Log.d(TAG, "No ad available");
                         }
                     };
+
                     OfferWallRequester.create(requestCallback).request(mContext);
+
+                    errorCallback.invoke(null);
                 }
                 catch (IllegalArgumentException e) {
                     Log.e(TAG, e.getMessage());
