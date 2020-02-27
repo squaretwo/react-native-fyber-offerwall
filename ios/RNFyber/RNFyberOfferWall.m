@@ -1,16 +1,9 @@
-//
 //  RNFyberOfferWall.m
 //  RNFyberOfferWall
 //
 //  Created by Ben Yee <benyee@gmail.com> on 5/20/16.
-//
+
 #import "RNFyberOfferWall.h"
-
-// Failed is not actually used, but it's an event the JS listens to, so...
-
-NSString *const kFyberOfferWallInitializeFailed = @"fyberOfferWallInitializeFailed";
-NSString *const kFyberOfferWallInitializeSucceeded = @"fyberOfferWallInitializeSucceeded";
-NSString *const kFyberOfferWallShowOfferWallSucceeded = @"fyberOfferWallShowOfferWallSucceeded";
 
 @implementation RNFyberOfferWall {
 }
@@ -23,30 +16,27 @@ RCT_EXPORT_MODULE();
   return dispatch_get_main_queue();
 }
 
-- (NSArray<NSString *> *)supportedEvents {
-    return @[
-        kFyberOfferWallInitializeFailed,
-        kFyberOfferWallInitializeSucceeded,
-        kFyberOfferWallShowOfferWallSucceeded
-    ];
-}
-
 #pragma mark exported methods
 
-RCT_EXPORT_METHOD(initializeOfferWall: (NSString *)appId securityToken: (NSString *)securityToken userId: (NSString *)userId) {
+RCT_EXPORT_METHOD(initializeOfferWall: (NSString *)appId
+                        securityToken: (NSString *)securityToken
+                               userId: (NSString *)userId
+                              resolve: (RCTPromiseResolveBlock)resolve
+                               reject: (RCTPromiseRejectBlock)reject) {
   FYBSDKOptions *options = [FYBSDKOptions optionsWithAppId: appId
                                                     userId: userId
                                              securityToken: securityToken];
 
   [FyberSDK startWithOptions: options];
 
-  [self sendEventWithName: kFyberOfferWallInitializeSucceeded body: nil];
+  resolve();
 }
 
 //
 // Show the Offer Wall
 //
-RCT_EXPORT_METHOD(showOfferWall) {
+RCT_EXPORT_METHOD(showOfferWall: (RCTPromiseResolveBlock)resolve
+                         reject: (RCTPromiseRejectBlock)reject) {
     FYBOfferWallViewController *offerWallViewController = [FyberSDK offerWallViewController];
 
     [offerWallViewController presentFromViewController: [UIApplication sharedApplication].delegate.window.rootViewController
@@ -54,7 +44,7 @@ RCT_EXPORT_METHOD(showOfferWall) {
                                             completion: ^{
                                                           NSLog(@"Offer Wall presented");
 
-                                                          [self sendEventWithName: kFyberOfferWallShowOfferWallSucceeded body: nil];
+                                                          resolve();
                                                         }
 
                                                dismiss: ^(NSError *error) {

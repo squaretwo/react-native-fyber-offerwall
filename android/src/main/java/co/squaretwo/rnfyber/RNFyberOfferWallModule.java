@@ -3,15 +3,11 @@ package co.squaretwo.rnfyber;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.WritableNativeMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import com.fyber.Fyber;
 import com.fyber.ads.AdFormat;
@@ -41,14 +37,8 @@ public class RNFyberOfferWallModule extends ReactContextBaseJavaModule {
         return TAG;
     }
 
-    private void sendEvent (String eventName, @Nullable WritableMap params) {
-        getReactApplicationContext()
-            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-            .emit(eventName, params);
-    }
-
     @ReactMethod
-    public void initializeOfferWall(final String appId, final String securityToken, final String userId) {
+    public void initializeOfferWall(final String appId, final String securityToken, final String userId, final Promise promise) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -66,7 +56,7 @@ public class RNFyberOfferWallModule extends ReactContextBaseJavaModule {
                             Log.d(TAG, "Something went wrong with the request: " + description);
                             map.putString("error", description);
 
-                            sendEvent("fyberOfferWallInitializeFailed", map);
+                            promise.reject(map);
                         }
 
                         @Override
@@ -75,7 +65,7 @@ public class RNFyberOfferWallModule extends ReactContextBaseJavaModule {
 
                             mOfferWallIntent = intent;
 
-                            sendEvent("fyberOfferWallInitializeSucceeded", null);
+                            promise.resolve();
                         }
 
                         @Override
@@ -85,7 +75,7 @@ public class RNFyberOfferWallModule extends ReactContextBaseJavaModule {
                             Log.d(TAG, "No ad available");
                             map.putString("error", "No ad available");
 
-                            sendEvent("fyberOfferWallInitializeFailed", map);
+                            promise.reject(map);
                         }
                     };
 
@@ -98,14 +88,14 @@ public class RNFyberOfferWallModule extends ReactContextBaseJavaModule {
                     Log.e(TAG, message);
                     map.putString("error", message);
 
-                    sendEvent("fyberOfferWallInitializeFailed", map);
+                    promise.reject(map);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void showOfferWall() {
+    public void showOfferWall(final Promise promise) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -113,7 +103,7 @@ public class RNFyberOfferWallModule extends ReactContextBaseJavaModule {
 
                 Log.d(TAG, "showOfferWall started");
 
-                sendEvent("fyberOfferWallShowOfferWallSucceeded", null);
+                promise.resolve();
             }
         });
     }
