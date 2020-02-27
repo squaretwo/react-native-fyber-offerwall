@@ -6,48 +6,62 @@
 //
 #import "RNFyberOfferWall.h"
 
-@implementation RNFyberOfferWall {
-}
+// Failed is not actually used, but it's an event the JS listens to, so...
 
-// Run on the main thread
-- (dispatch_queue_t)methodQueue
-{
-  return dispatch_get_main_queue();
+NSString *const kFyberOfferWallInitializeFailed = @"fyberOfferWallInitializeFailed";
+NSString *const kFyberOfferWallInitializeSucceeded = @"fyberOfferWallInitializeSucceeded";
+NSString *const kFyberOfferWallShowOfferWallSucceeded = @"fyberOfferWallShowOfferWallSucceeded";
+
+@implementation RNFyberOfferWall {
 }
 
 RCT_EXPORT_MODULE();
 
-// Initialize Fyber before showing the offer wall
-RCT_EXPORT_METHOD(initializeOfferWall:(NSString *)appId securityToken:(NSString *)securityToken userId:(NSString *)userId callBack:(RCTResponseSenderBlock)errorCallback)
-{
-  FYBSDKOptions *options = [FYBSDKOptions optionsWithAppId:appId
-                                                    userId:userId
-                                             securityToken:securityToken];
-  [FyberSDK startWithOptions:options];
+// Run on the main thread
+
+- (dispatch_queue_t)methodQueue {
+  return dispatch_get_main_queue();
+}
+
+- (NSArray<NSString *> *)supportedEvents {
+    return @[
+        kFyberOfferWallInitializeFailed,
+        kFyberOfferWallInitializeSucceeded,
+        kFyberOfferWallShowOfferWallSucceeded
+    ];
+}
+
+#pragma mark exported methods
+
+RCT_EXPORT_METHOD(initializeOfferWall: (NSString *)appId securityToken: (NSString *)securityToken userId: (NSString *)userId) {
+  FYBSDKOptions *options = [FYBSDKOptions optionsWithAppId: appId
+                                                    userId: userId
+                                             securityToken: securityToken];
+
+  [FyberSDK startWithOptions: options];
+
+  [self sendEventWithName: kFyberOfferWallInitializeSucceeded body: nil];
 }
 
 //
 // Show the Offer Wall
 //
-RCT_EXPORT_METHOD(showOfferWall)
-{
+RCT_EXPORT_METHOD(showOfferWall) {
+    FYBOfferWallViewController *offerWallViewController = [FyberSDK offerWallViewController];
 
-  FYBOfferWallViewController *offerWallViewController = [FyberSDK offerWallViewController];
-  [offerWallViewController presentFromViewController:[UIApplication sharedApplication].delegate.window.rootViewController animated:YES completion:^{
+    [offerWallViewController presentFromViewController: [UIApplication sharedApplication].delegate.window.rootViewController
+                                              animated: YES
+                                            completion: ^{
+                                                          NSLog(@"Offer Wall presented");
 
-    NSLog(@"Offer Wall presented");
+                                                          [self sendEventWithName: kFyberOfferWallShowOfferWallSucceeded body: nil];
+                                                        }
 
-  } dismiss:^(NSError *error) {
-
-    //
-    // Code executed when the Offer Wall is dismissed
-    // If an error occurred, the error parameter describes the error otherwise this value is nil
-    //
-    if (error) {
-      NSLog(@"Offer Wall error");
-    }
-
-  }];
+                                               dismiss: ^(NSError *error) {
+                                                          if (error) {
+                                                            NSLog(@"Offer Wall error");
+                                                          }
+                                                        }];
 }
 
 @end
