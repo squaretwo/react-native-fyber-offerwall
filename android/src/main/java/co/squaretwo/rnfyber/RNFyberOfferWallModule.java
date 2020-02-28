@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -51,31 +52,26 @@ public class RNFyberOfferWallModule extends ReactContextBaseJavaModule {
                         @Override
                         public void onRequestError(RequestError requestError) {
                             String description = requestError.getDescription();
-                            WritableMap map = new WritableNativeMap();
 
                             Log.d(TAG, "Something went wrong with the request: " + description);
-                            map.putString("error", description);
 
-                            promise.reject(map);
+                            promise.reject(description);
                         }
 
                         @Override
                         public void onAdAvailable(Intent intent) {
-                            Log.d(TAG, "Offers are available");
-
                             mOfferWallIntent = intent;
 
-                            promise.resolve();
+                            Log.d(TAG, "Offers are available");
+
+                            promise.resolve("Offers are available");
                         }
 
                         @Override
                         public void onAdNotAvailable(AdFormat adFormat) {
-                            WritableMap map = new WritableNativeMap();
-
                             Log.d(TAG, "No ad available");
-                            map.putString("error", "No ad available");
 
-                            promise.reject(map);
+                            promise.reject("No ad available");
                         }
                     };
 
@@ -83,12 +79,10 @@ public class RNFyberOfferWallModule extends ReactContextBaseJavaModule {
                 }
                 catch (IllegalArgumentException e) {
                     String message = e.getMessage();
-                    WritableMap map = new WritableNativeMap();
 
                     Log.e(TAG, message);
-                    map.putString("error", message);
 
-                    promise.reject(map);
+                    promise.reject(message);
                 }
             }
         });
@@ -103,7 +97,7 @@ public class RNFyberOfferWallModule extends ReactContextBaseJavaModule {
 
                 Log.d(TAG, "showOfferWall started");
 
-                promise.resolve();
+                promise.resolve("showOfferWall started");
             }
         });
     }

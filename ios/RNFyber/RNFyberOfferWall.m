@@ -29,7 +29,7 @@ RCT_EXPORT_METHOD(initializeOfferWall: (NSString *)appId
 
   [FyberSDK startWithOptions: options];
 
-  resolve();
+  resolve(@"Initialize Succeeded");
 }
 
 //
@@ -44,7 +44,7 @@ RCT_EXPORT_METHOD(showOfferWall: (RCTPromiseResolveBlock)resolve
                                             completion: ^{
                                                           NSLog(@"Offer Wall presented");
 
-                                                          resolve();
+                                                          resolve(@"Offer Wall presented");
                                                         }
 
                                                dismiss: ^(NSError *error) {
