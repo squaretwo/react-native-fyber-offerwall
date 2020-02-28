@@ -1,15 +1,15 @@
 package co.squaretwo.rnfyber;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+
 import com.fyber.Fyber;
 import com.fyber.ads.AdFormat;
 import com.fyber.requesters.OfferWallRequester;
@@ -29,6 +29,7 @@ public class RNFyberOfferWallModule extends ReactContextBaseJavaModule {
 
     public RNFyberOfferWallModule(ReactApplicationContext reactContext) {
         super(reactContext);
+
         mContext = reactContext;
     }
 
@@ -38,7 +39,7 @@ public class RNFyberOfferWallModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void initializeOfferWall(final String appId, final String securityToken, final String userId, final Callback errorCallback) {
+    public void initializeOfferWall(final String appId, final String securityToken, final String userId, final Promise promise) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -50,43 +51,53 @@ public class RNFyberOfferWallModule extends ReactContextBaseJavaModule {
                     requestCallback = new RequestCallback() {
                         @Override
                         public void onRequestError(RequestError requestError) {
-                            Log.d(TAG, "Something went wrong with the request: " + requestError.getDescription());
+                            String description = requestError.getDescription();
+
+                            Log.d(TAG, "Something went wrong with the request: " + description);
+
+                            promise.reject(description);
                         }
 
                         @Override
                         public void onAdAvailable(Intent intent) {
+                            mOfferWallIntent = intent;
+
                             Log.d(TAG, "Offers are available");
 
-                            mOfferWallIntent = intent;
+                            promise.resolve("Offers are available");
                         }
 
                         @Override
                         public void onAdNotAvailable(AdFormat adFormat) {
                             Log.d(TAG, "No ad available");
+
+                            promise.reject("No ad available");
                         }
                     };
 
                     OfferWallRequester.create(requestCallback).request(mContext);
-
-                    errorCallback.invoke(null);
                 }
                 catch (IllegalArgumentException e) {
-                    Log.e(TAG, e.getMessage());
+                    String message = e.getMessage();
 
-                    errorCallback.invoke(e.getMessage());
+                    Log.e(TAG, message);
+
+                    promise.reject(message);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void showOfferWall() {
+    public void showOfferWall(final Promise promise) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-              mContext.startActivityForResult(mOfferWallIntent, OFFER_WALL_REQUEST, null);
+                mContext.startActivityForResult(mOfferWallIntent, OFFER_WALL_REQUEST, null);
 
-              Log.d(TAG, "showOfferWall started");
+                Log.d(TAG, "showOfferWall started");
+
+                promise.resolve("showOfferWall started");
             }
         });
     }
